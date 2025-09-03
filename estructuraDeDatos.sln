@@ -1,0 +1,50 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "recorridoEinsercionArrayPractica", "recorridoEinsercionArrayPractica", "{8179CE34-5BDB-E51E-44DA-84CEF3F03C9C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "arrayPractica", "arrayPractica", "{59E13BD5-99F4-25AC-A0F3-D160AA653421}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tiposAbstractosPractica", "tiposAbstractosPractica", "{F9272B0A-60E8-F84A-8361-81F855842DCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cs", "recorridoEinsercionArrayPractica\cs\cs.csproj", "{91E72BC3-AFE6-4891-A427-2F335FC6F962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arrayCSharp", "arrayPractica\arrayCSharp\arrayCSharp.csproj", "{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "abstractCsharp", "abstractCsharp", "{25446AE5-C9AA-24BE-743C-76046FB1FB78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "main", "tiposAbstractosPractica\abstractCsharp\main\main.csproj", "{CCA10F65-DCEB-F825-EB84-92374EA7EA23}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91E72BC3-AFE6-4891-A427-2F335FC6F962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91E72BC3-AFE6-4891-A427-2F335FC6F962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91E72BC3-AFE6-4891-A427-2F335FC6F962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91E72BC3-AFE6-4891-A427-2F335FC6F962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCA10F65-DCEB-F825-EB84-92374EA7EA23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCA10F65-DCEB-F825-EB84-92374EA7EA23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCA10F65-DCEB-F825-EB84-92374EA7EA23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCA10F65-DCEB-F825-EB84-92374EA7EA23}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{91E72BC3-AFE6-4891-A427-2F335FC6F962} = {8179CE34-5BDB-E51E-44DA-84CEF3F03C9C}
+		{9EFBE05E-D42D-A54D-E390-7BF5DE8CD472} = {59E13BD5-99F4-25AC-A0F3-D160AA653421}
+		{25446AE5-C9AA-24BE-743C-76046FB1FB78} = {F9272B0A-60E8-F84A-8361-81F855842DCF}
+		{CCA10F65-DCEB-F825-EB84-92374EA7EA23} = {25446AE5-C9AA-24BE-743C-76046FB1FB78}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F2CA9DB-D2DE-4011-A8A5-0AA682579C53}
+	EndGlobalSection
+EndGlobal
