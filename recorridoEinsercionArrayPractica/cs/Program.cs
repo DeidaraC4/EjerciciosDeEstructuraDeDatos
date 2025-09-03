@@ -22,7 +22,7 @@ namespace arrays
 
             int num = int.Parse(numS);
             int position = int.Parse(positionS);
-
+            
             for (int i = arr.Length - 1; i > position; i--)
             {
                 arr[i] = arr[i - 1];
