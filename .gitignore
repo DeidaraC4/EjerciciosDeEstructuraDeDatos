@@ -3,3 +3,4 @@ bin
 obj
 Main.class
 venv
+__pycache__
