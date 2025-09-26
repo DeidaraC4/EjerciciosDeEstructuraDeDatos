@@ -1,5 +1,6 @@
 import pygame, sys
 from grid import Grid
+from ships import *
 
 pygame.init()
 
@@ -14,8 +15,9 @@ oceanGrid = pygame.transform.scale(oceanGrid, (495, 495))
 targetGrid = pygame.image.load("targetGrid.png")
 targetGrid = pygame.transform.scale(targetGrid, (495, 495)) #Cada celda mide 45px
 
-gameGrid = Grid()
-gameGrid.printGrid()
+gameGrid = Grid(screen)
+
+ship = shipTwo(screen)
 
 running = True
 while running:
@@ -26,6 +28,10 @@ while running:
             running = False
     screen.blit(oceanGrid, (0, 495))
     screen.blit(targetGrid, (0, 0))
+    gameGrid.drawGridH()
+    #gameGrid.drawGridV()
+    #ship.rotationState = 1
+    ship.draw()
     
     pygame.display.update()
     clock.tick(60)
