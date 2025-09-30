@@ -6,6 +6,8 @@ class Grid:
         self.cols = 10
         self.cellSize = 45
         self.grid = [[0 for j in range(self.cols)] for i in range(self.rows)]
+        self.gridVSprites = [[0 for j in range(self.cols)] for i in range(self.rows)]
+        self.gridHSprites = [[0 for j in range(self.cols)] for i in range(self.rows)]
         self.sprite = Sprites.getSprites()
         self.screen = screen
         print(self.sprite)
@@ -21,13 +23,14 @@ class Grid:
             return True
         return False
     
-    def draw(self):
+    def drawGridH(self):
         i = 0
         lastCellValue = 0
         cellValue = 0
         for row in range(self.rows):
             for col in range(self.cols):
-                cellValue = self.grid[row][col] #para hacer una recorrido horizontal poner en un if para indicar tipo de recorrido de acuerdo al barco actual
+                cellValue = self.gridHSprites[row][col] #para hacer una recorrido horizontal poner en un if para indicar tipo de recorrido de acuerdo al barco actual
+                #print(self.gridHSprites)
                 cellSpace = pygame.Rect(col * self.cellSize + 47, row * self.cellSize + 542, self.cellSize + 2, self.cellSize + 2)
 
                 if i < 6 and cellValue != 0 and cellValue == lastCellValue: #Entra en esta condicion para dibujar el barco horizontal completo
@@ -47,13 +50,13 @@ class Grid:
                 else:
                     i = 0 # usar j como contador de los sprites verticales
     
-    def drawGridV(self): #IMPORTANTE: tiene que ignorar los barcos horizontales
+    def drawGridV(self): #Funcion de recorrido vertical de matriz para dibujado vertical
         i = 0
         lastCellValue = 0
         cellValue = 0
         for col in range(self.cols):
             for row in range(self.rows):
-                cellValue = self.grid[row][col] #para hacer una recorrido horizontal poner en un if para indicar tipo de recorrido de acuerdo al barco actual
+                cellValue = self.gridVSprites[row][col] #para hacer una recorrido horizontal poner en un if para indicar tipo de recorrido de acuerdo al barco actual
                 cellSpace = pygame.Rect(col * self.cellSize + 47, row * self.cellSize + 542, self.cellSize + 2, self.cellSize + 2)
 
                 if i < 6 and cellValue != 0 and cellValue == lastCellValue: #Entra en esta condicion para dibujar el barco horizontal completo

@@ -39,8 +39,19 @@ class Game:
 
     def lockShip(self):
         tiles = self.currentShip.getCellsPosition()
+        #lo siguiente se puede modularizar en una funcion para saber si un barco colisiona con otro
+        for position in tiles:
+            if self.grid.grid[position.row][position.col] != 0:
+                print("no se puede poner ahi un barco")
+                return
+
         for position in tiles:
             self.grid.grid[position.row][position.col] = self.currentShip.id
+            if self.currentShip.rotationState == 0: #agregado para dibujar sprites verticales tambien
+                self.grid.gridHSprites[position.row][position.col] = self.currentShip.id
+            else:
+                self.grid.gridVSprites[position.row][position.col] = self.currentShip.id
+
         self.currentShip = self.nextShip
         self.nextShip = self.getRandomShip()
 
@@ -58,5 +69,6 @@ class Game:
             self.currentShip.undo_rotation()
 
     def draw(self):
-        self.grid.draw()
+        self.grid.drawGridH()
+        self.grid.drawGridV()
         self.currentShip.draw()
