@@ -1,5 +1,7 @@
-arr = [97, 5, 85, 34, 31, 2, 131, 283, 23, 54]
-
+arr = []
+for i in range(10):
+    arr[i] = input("escribe un numero: ")
+    
 for i in range(10):
     print(arr[i], end=" ")
 print()
