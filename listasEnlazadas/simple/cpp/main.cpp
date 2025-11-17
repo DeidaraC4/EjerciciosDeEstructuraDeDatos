@@ -2,6 +2,7 @@
 
 #include <iostream> // Para operaciones de entrada/salida (cout, cin)
 #include <cstdlib>  // Para funciones del sistema como exit()
+#include <limits> //para limpiar el buffer del cin
 using namespace std; // Uso del espacio de nombres estándar
 
 // Definición de la estructura del nodo para la lista enlazada
@@ -31,10 +32,12 @@ int main() { // función principal
         cout << "\nElige una opción de la siguiente lista...\n"; // Instrucción para elegir una opción
         cout << "================================\n"; // Línea separadora
         // Opciones del menú
-        cout << "1. Insertar al principio\t2. Insertar al final\t3. Insertar en una posición específica\n4. Eliminar del principio\n";
-        cout << "5. Eliminar desde el último\t6. Eliminar nodo después de la ubicación especificada\n7. Buscar un elemento\n8. Mostrar\n9. Salir\n";
-        cout << "\nIngrese su opción:\t"; // Solicita la opción del usuario
+        cout << "1. Insertar al principio\n2. Insertar al final\n3. Insertar en una posición específica\n4. Eliminar del principio\n";
+        cout << "5. Eliminar desde el último\n6. Eliminar nodo después de la ubicación especificada\n7. Buscar un elemento\n8. Mostrar\n9. Salir\n";
+        cout << "\nIngrese su opción:\n"; // Solicita la opción del usuario
         cin >> choice; // Lee la opción del usuario
+        cin.clear(); 
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //limpiar buffer despues de ser usado (para que el cpp desgraciado no piense que ya inseramos un valor y se ande repitiendo como un loop)
         // Evalúa la opción seleccionada
         switch (choice) {
             case 1: begin_insert(); // Llama a la función para insertar al principio
@@ -69,7 +72,7 @@ void begin_insert() {
     int item; // Variable para almacenar el valor a insertar
 
     // Asigna memoria dinámica para el nuevo nodo
-    ptr = (struct node *)malloc(sizeof(struct node *));
+    ptr = (struct node *)malloc(sizeof(struct node));
 
     // Verifica si hay memoria disponible
     if (ptr == NULL) {
@@ -128,6 +131,8 @@ void last_insert() {
 // --- Función random_insert() ---
 // Función para insertar un nodo en una posición específica de la lista
 void random_insert() {
+    if(head == nullptr) {cout << "Lista vacia" << endl; return;}
+
     // Variables para el contador, la posición y el valor a insertar
     int i, loc, item;
     // Punteros para el nuevo nodo y para recorrer la lista
@@ -140,6 +145,8 @@ void random_insert() {
     if (ptr == NULL) {
         cout << "\nOVERFLOW"; // Error: no hay memoria suficiente
     } else {
+        if(head == nullptr) {cout << "Lista vacia" << endl; return;}
+
         // Solicita y lee el valor a insertar
         cout << "\nIntroduzca el valor del elemento\n";
         cin >> item;
@@ -176,17 +183,15 @@ void begin_delete() {
     struct node *ptr;
 
     // Verifica si la lista está vacía
-    if (head == NULL) {
-        cout << "\nLa lista está vacía\n";
-    } else {
-        // Guarda el primer nodo en ptr
-        ptr = head;
-        // Actualiza head para que apunte al segundo nodo
-        head = ptr->next;
-        // Libera la memoria del nodo eliminado
-        delete ptr;
-        cout << "\nNodo eliminado desde el principio ...\n";
-    }
+    if(head == nullptr) {cout << "Lista vacia" << endl; return;}
+
+    // Guarda el primer nodo en ptr
+    ptr = head;
+    // Actualiza head para que apunte al segundo nodo
+    head = ptr->next;
+    // Libera la memoria del nodo eliminado
+    free(ptr);
+    cout << "\nNodo eliminado desde el principio ...\n";
 }
 
 // --- Función last_delete() ---
@@ -201,7 +206,7 @@ void last_delete() {
     }
     // Caso especial: solo hay un nodo
     else if (head->next == NULL) {
-        delete head; // Libera la memoria del único nodo
+        free(head); // Libera la memoria del único nodo
         head = NULL; // Actualiza head a NULL
         cout << "\nSolo se eliminó un nodo de la lista ...\n";
     }
@@ -215,7 +220,7 @@ void last_delete() {
             ptr = ptr->next; // Avanza al siguiente
         }
         ptr1->next = NULL; // El penúltimo se convierte en último
-        delete ptr;      // Libera la memoria del último nodo
+        free(ptr);      // Libera la memoria del último nodo
         cout << "\nNodo eliminado del último ...\n";
     }
 }
@@ -224,6 +229,7 @@ void last_delete() {
 // Función para eliminar un nodo después de una posición específica
 void random_delete() {
     // Punteros para mantener el nodo actual y el anterior
+    if(head == nullptr) {cout << "Lista vacia" << endl; return;}
     struct node *ptr, *ptr1;
     int loc, i;
 
@@ -233,22 +239,26 @@ void random_delete() {
 
     // Comienza desde el principio de la lista
     ptr = head;
-
-    // Avanza hasta la posición deseada
-    for (i = 0; i < loc; i++) {
-        ptr1 = ptr;     // Guarda el nodo actual
-        ptr = ptr->next; // Avanza al siguiente
-
-        // Verifica si llegamos al final antes de tiempo
-        if (ptr == NULL) {
-            cout << "\nNo se puede eliminar";
-            return; // La posición está fuera de rango
+    if(loc == 0){
+        head = ptr->next;
+        free(ptr);
+    }else{
+        // Avanza hasta la posición deseada
+        for (i = 0; i < loc; i++) {
+            ptr1 = ptr;     // Guarda el nodo actual
+            ptr = ptr->next; // Avanza al siguiente
+    
+            // Verifica si llegamos al final antes de tiempo
+            if (ptr == NULL) {
+                cout << "\nNo se puede eliminar";
+                return; // La posición está fuera de rango
+            }
         }
+        // Realiza la eliminación
+        ptr1->next = ptr->next; // Reconecta el nodo anterior con el siguiente
+        free(ptr);           // Libera la memoria del nodo eliminado
     }
 
-    // Realiza la eliminación
-    ptr1->next = ptr->next; // Reconecta el nodo anterior con el siguiente
-    delete ptr;           // Libera la memoria del nodo eliminado
     cout << "\nNodo eliminado " << loc + 1;
 }
 
@@ -263,29 +273,28 @@ void search() {
     ptr = head;   // Comienza desde el principio
 
     // Verifica si la lista está vacía
-    if (ptr == NULL) {
-        cout << "\nLista vacía\n";
-    } else {
-        // Solicita el elemento a buscar
-        cout << "\nIntroduce el elemento que deseas buscar?\n";
-        cin >> item;
+    if(head == nullptr) {cout << "Lista vacia" << endl; return;}
 
-        // Recorre la lista completa
-        while (ptr != NULL) {
-            // Si encuentra el elemento
-            if (ptr->data == item) {
-                cout << "Elemento encontrado en la ubicación " << i + 1;
-                flag = 0; // Marca como encontrado
-            } else {
-                flag = 1; // Marca como no encontrado
-            }
-            i++;            // Incrementa el contador de posición
-            ptr = ptr->next; // Avanza al siguiente nodo
+    // Solicita el elemento a buscar
+    cout << "\nIntroduce el elemento que deseas buscar?\n";
+    cin >> item;
+
+    // Recorre la lista completa
+    while (ptr != NULL) {
+        // Si encuentra el elemento
+        if (ptr->data == item) {
+            cout << "Elemento encontrado en la ubicación " << i + 1;
+            flag = 0; // Marca como encontrado
+            break;
+        } else {
+            flag = 1; // Marca como no encontrado
         }
-        // Si no se encontró el elemento en ninguna posición
-        if (flag == 1) {
-            cout << "Elemento no encontrado\n";
-        }
+        i++;            // Incrementa el contador de posición
+        ptr = ptr->next; // Avanza al siguiente nodo
+    }
+    // Si no se encontró el elemento en ninguna posición
+    if (flag == 1) {
+        cout << "Elemento no encontrado\n";
     }
 }
 
@@ -297,14 +306,13 @@ void display() {
     ptr = head; // Comienza desde el principio
 
     // Verifica si la lista está vacía
-    if (ptr == NULL) {
-        cout << "Nada que imprimir";
-    } else {
-        // Imprime todos los elementos de la lista
-        cout << "\nimprimiendo valores . . .\n";
-        while (ptr != NULL) {
-            cout << "\n" << ptr->data; // Imprime el valor del nodo actual
-            ptr = ptr->next;         // Avanza al siguiente nodo
-        }
+    if(head == nullptr) {cout << "Lista vacia" << endl; return;}
+
+    // Imprime todos los elementos de la lista
+    cout << "\nimprimiendo valores . . .\n";
+    while (ptr != NULL) {
+        cout << ptr->data << "->"; // Imprime el valor del nodo actual
+        ptr = ptr->next;         // Avanza al siguiente nodo
     }
+    cout << "NULL";
 }

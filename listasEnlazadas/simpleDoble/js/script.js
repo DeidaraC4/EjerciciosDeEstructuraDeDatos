@@ -2,7 +2,7 @@ class Node {
     constructor(dato) {
         this.data = dato;
         this.next = null;
-        this.prev = null; //nodo al anterior
+        this.prev = null;
     }
 }
 
@@ -13,20 +13,18 @@ class LinkedList {
 
     beginsert(data) {
         let ptr = new Node(data);
-        if(this.head === null){
+        if (this.head === null) {
             this.head = ptr;
-        }else{
+        } else {
             ptr.next = this.head;
             this.head.prev = ptr;
             this.head = ptr;
-
         }
         console.log("Nodo insertado al inicio.");
     }
 
     lastinsert(data) {
         let ptr = new Node(data);
-
         if (this.head === null) {
             ptr.next = this.head;
             this.head = ptr;
@@ -41,26 +39,37 @@ class LinkedList {
         console.log("Nodo insertado al final.");
     }
 
-    randominsert(data, pos) {
+    randominsert(data, loc) {
         let ptr = new Node(data);
         let temp = this.head;
 
-        for (let i = 0; i < pos - 1; i++) {
-            temp = temp.next;
-            if (temp === null) {
-                console.log("no se pudo alcanzar dicha locacion");
-                return;
+        if (loc === 0) {
+            ptr.next = this.head;
+            if (this.head !== null) {
+                this.head.prev = ptr;
             }
+            this.head = ptr;
+        } else {
+            for (let i = 0; i < loc; i++) {
+                temp = temp.next;
+                if (temp === null) {
+                    console.log("no se pudo alcanzar dicha locacion");
+                    return;
+                }
+            }
+            ptr.next = temp.next;
+            if (temp.next !== null) temp.next.prev = ptr;
+            temp.next = ptr;
+            ptr.prev = temp;
         }
-        ptr.next = temp.next;
-        temp.next = ptr;
-        ptr.prev = temp;
-        console.log(`Nodo insertado en la posicion ${pos}.`);
+        console.log(`Nodo insertado en la posicion ${loc}.`);
     }
 
     begin_delete() {
         if (this.head === null) {
             console.log("la lista esta vacia");
+        } else if (this.head.next === null) {
+            this.head = null;
         } else {
             this.head = this.head.next;
             this.head.prev = null;
@@ -84,46 +93,54 @@ class LinkedList {
         }
     }
 
-    random_delete(pos) {
+    random_delete(loc) {
         if (this.head === null) {
             console.log("la lista esta vacia");
         } else {
-            let temp = this.head.next;
-            let temp2 = this.head;
-            for (let i = 0; i < pos - 1; i++) {
-                temp = temp.next;
-                temp2 = temp2.next;
-                if (temp === null) {
-                    console.log("eliminacion fuera de rango");
+            let temp = this.head;
+            let temp2;
+            if (loc === 0) {
+                if (this.head.next === null) {
+                    this.head = null;
                     return;
                 }
+                this.head = this.head.next;
+                this.head.prev = null;
+            } else {
+                for (let i = 0; i < loc; i++) {
+                    temp2 = temp;
+                    temp = temp.next;
+                    if (temp === null) {
+                        console.log("eliminacion fuera de rango");
+                        return;
+                    }
+                }
+                temp2.next = temp.next;
+                if (temp.next !== null) {
+                    temp.next.prev = temp2;
+                }
             }
-            temp2.next = temp.next;
-            if(temp.next != null){temp.next.prev = temp2;}
-            temp = null;
-            console.log(`Nodo en la posicion ${pos} eliminado.`);
+            console.log(`Nodo en la posicion ${loc} eliminado.`);
         }
     }
 
     search(ele) {
         let temp = this.head;
-        let pos = 0;
+        let loc = 0;
         let found = false;
         if (this.head === null) {
             console.log("La lista esta vacia");
         } else {
             while (temp !== null) {
-                // Comparamos directamente. El C# usaba un comparador genérico,
-                // JS usa '===' para tipos simples.
-                if (temp.data === ele) { 
+                if (temp.data === ele) {
                     found = true;
                     break;
                 }
                 temp = temp.next;
-                pos += 1;
+                loc += 1;
             }
             if (found) {
-                console.log(`elemento ${ele} encontrado en la posicion  ${pos}`);
+                console.log(`elemento ${ele} encontrado en la posicion  ${loc}`);
             } else {
                 console.log(`Elemento ${ele} NO encontrado en la lista.`);
             }
@@ -135,7 +152,7 @@ class LinkedList {
         if (this.head === null) {
             console.log("Lista vacia");
         } else {
-            let output = ""; // Emulamos Console.Write construyendo un string
+            let output = "";
             while (ptr !== null) {
                 output += `${ptr.data}<->`;
                 ptr = ptr.next;
@@ -153,21 +170,20 @@ function main() {
     let ele2 = 0;
 
     do {
-        let menu = "\n\n*********Menu principal*********\n" +
-                   "\nElige una opcion de la siguiente lista ...\n" +
-                   "\n===============================================\n" +
-                   "\n1. insertar al principio\n2. insertar al final\n3. insertar\n4. eliminar al principio" +
-                   "\n5. eliminar el ultimo\n6. eliminar nodo despues de la ubicacion especificada\n7. buscar un elemento\n8. mostrar\n9. salir\n" +
-                   "\nIngrese su opcion?\n";
+        let menu = "\n\n*********Menu principal*********\n"
+             + "\nElige una opcion de la siguiente lista ...\n"
+             + "\n===============================================\n"
+             + "\n1. insertar al principio\n2. insertar al final\n3. insertar\n4. eliminar al principio"
+             + "\n5. eliminar el ultimo\n6. eliminar nodo despues de la ubicacion especificada\n7. buscar un elemento\n8. mostrar\n9. salir\n"
+             + "\nIngrese su opcion?\n";
         
-        // 'prompt' es el equivalente en navegador a 'Console.ReadLine'
         let input = prompt(menu);
+        if(input === null) choice = 9;
+        else choice = parseInt(input);
 
-        if (input === null) { 
-            // Si el usuario presiona "Cancelar", salimos del bucle.
-            choice = 9;
-        } else {
-            choice = parseInt(input);
+        if (isNaN(choice)) {
+            console.log("Entrada invalida. Por favor ingrese un numero.");
+            continue;
         }
 
         switch (choice) {
@@ -195,7 +211,7 @@ function main() {
                 lista.random_delete(ele);
                 break;
             case 7:
-                ele = parseInt(prompt("Escribe un elemento a agregar/eliminar"));
+                ele = parseInt(prompt("Escribe un elemento a buscar"));
                 lista.search(ele);
                 break;
             case 8:

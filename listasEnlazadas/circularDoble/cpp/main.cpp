@@ -7,6 +7,7 @@ using namespace std; // Uso del espacio de nombres estandar
 struct node {
     int data;          // Almacena el valor numerico del nodo
     struct node *next; // Puntero que apunta al siguiente nodo
+    struct node *prev; // Puntero que apunta al nodo anterior
 };
 
 // Variable global que apunta al primer nodo de la lista
@@ -55,28 +56,28 @@ int main() {
 void begin_insert() {
     struct node *ptr;
     int item;
-    
+
     ptr = (struct node*)malloc(sizeof(struct node));
     if(ptr == NULL) {
         cout << "OVERFLOW\n";
         return;
     }
-    
+
     cout << "Ingrese valor: ";
     cin >> item;
-    
+
     ptr->data = item;
-    
+
     if(head == NULL) {
         ptr->next = ptr; //el siguiente del apuntador es el nodo actual
+        ptr->prev = ptr; //el anterior del apuntador es el nodo actual
         head = ptr;
     } else {
-        struct node *temp = head;
-        while(temp->next != head){ //se va a repetir hasta que llegue a donde apunta la cabeza de nuevo
-            temp = temp->next;
-        }
+        struct node *fin = head->prev; //fin es igual al previo de la cabeza
         ptr->next = head; //el siguiente al nodo actual es cabeza
-        temp->next = ptr; //el siguiente al fin es el nodo actual
+        ptr->prev = fin; //el previo al nodo actual es fin
+        fin->next = ptr; //el siguiente al fin es el nodo actual
+        head->prev = ptr; //el anterior de cabeza es el nodo actual
         head = ptr; //ahora el nodo actual es cabeza
     }
     cout << "Nodo insertado al inicio\n";
@@ -100,14 +101,14 @@ void last_insert() {
 
     if(head == NULL) {
         ptr->next = ptr;
+        ptr->prev = ptr;
         head = ptr;
     } else {
-        struct node *temp = head;
-        while(temp->next != head){
-            temp = temp->next;
-        }
+        struct node *fin = head->prev;
         ptr->next = head; //el nodo actual se conecta con head en la siguiente
-        temp->next = ptr; //el siguiente del fin el el nodo actual
+        ptr->prev = fin; //el anterior del nodo actual es el antiguo fin
+        fin->next = ptr; //el siguiente del fin el el nodo actual
+        head->prev = ptr; //el anterior del nodo cabeza es el nodo actual
     }
     cout << "Nodo insertado al final\n";
 }
@@ -145,6 +146,8 @@ void random_insert() {
     }
 
     ptr->next = temp->next;
+    ptr->prev = temp;
+    temp->next->prev = ptr;
     temp->next = ptr;
 
     cout << "Nodo insertado despues de la posicion " << pos << "\n";
@@ -157,17 +160,15 @@ void begin_delete() {
         return;
     }
 
-    struct node *temp = head; //guardar el inicio que se eliminara despues
-    
+    struct node *fin = head->prev;
+    struct node *temp = head;
+
     if(head->next == head) {
         head = NULL;
         free(temp);
     } else {
-        struct node *temp2 = head; //guardar lo que se va a recorrer para encontrar el ultimmo elemento que se conectara con el que despues sera el nuevo primmer elemento
-        while(temp2->next != head){
-            temp2 = temp2->next;
-        }
-        temp2->next = head->next;
+        fin->next = head->next;
+        head->next->prev = fin;
         head = head->next;
         free(temp);
     }
@@ -181,19 +182,15 @@ void last_delete() {
         return;
     }
 
+    struct node *fin = head->prev;
+
     if(head->next == head) {
-        struct node *temp = head;
         head = NULL;
-        free(temp);
+        free(fin);
     } else {
-        struct node *temp = head;
-        struct node *temp2;
-        while(temp->next != head){
-            temp2 = temp;
-            temp = temp->next;
-        }
-        temp2->next = head;
-        free(temp);
+        fin->prev->next = head;
+        head->prev = fin->prev;
+        free(fin);
     }
     cout << "Nodo eliminado del final\n";
 }
@@ -202,7 +199,6 @@ void last_delete() {
 void random_delete() {
     int pos, i = 0;
     struct node *temp;
-    struct node *temp2;
 
     if(head == NULL) {
         cout << "Lista vacia\n";
@@ -213,33 +209,25 @@ void random_delete() {
     cin >> pos;
 
     temp = head;
-    if(pos == 0){
-        if(head->next == head) {
-            head = NULL;
-            free(temp);
-        } else {
-            struct node *temp2 = head; //guardar lo que se va a recorrer para encontrar el ultimmo elemento que se conectara con el que despues sera el nuevo primmer elemento
-            while(temp2->next != head){
-                temp2 = temp2->next;
-            }
-            temp2->next = head->next;
-            head = head->next;
-            free(temp);
+    for(i = 0; i < pos; i++) {
+        temp = temp->next;
+        if(temp == head) {
+            cout << "Posicion fuera de rango\n";
+            return;
         }
-    }else{
-        for(i = 0; i < pos; i++) {
-            temp2 = temp;
-            temp = temp->next;
-            if(temp == head) {
-                cout << "Posicion fuera de rango\n";
-                return;
-            }
-        }
-    
-        temp2->next = temp->next;
-    
-        free(temp);
     }
+
+    if(temp->next == temp && temp->prev == temp) {
+        head = nullptr;
+        free(temp);
+        return;
+    }
+    if(temp == head) head = head->next;
+
+    temp->prev->next = temp->next;
+    temp->next->prev = temp->prev;
+
+    free(temp);
     cout << "Nodo eliminado en la posicion " << pos << "\n";
 }
 
@@ -280,7 +268,7 @@ void display() {
     struct node *temp = head;
     cout << "Lista: ";
     do {
-        cout << temp->data << " -> ";
+        cout << temp->data << " <-> ";
         temp = temp->next;
     } while(temp != head);
     cout << "(circular)\n";

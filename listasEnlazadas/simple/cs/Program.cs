@@ -3,6 +3,7 @@
 class Node {
     public int data;
     public Node next;
+    public Node prev;
 }
 
 class Program {
@@ -47,14 +48,14 @@ class Program {
         
         if(head == null) {
             ptr.next = ptr;
+            ptr.prev = ptr;
             head = ptr;
         } else {
-            Node temp = head;
-            while(temp.next != head){
-                temp = temp.next;
-            }
+            Node fin = head.prev;
             ptr.next = head;
-            temp.next = ptr;
+            ptr.prev = fin;
+            fin.next = ptr;
+            head.prev = ptr;
             head = ptr;
         }
         Console.WriteLine("Nodo insertado al inicio\n");
@@ -71,14 +72,14 @@ class Program {
 
         if(head == null) {
             ptr.next = ptr;
+            ptr.prev = ptr;
             head = ptr;
         } else {
-            Node temp = head;
-            while(temp.next != head){
-                temp = temp.next;
-            }
+            Node fin = head.prev;
             ptr.next = head;
-            temp.next = ptr;
+            ptr.prev = fin;
+            fin.next = ptr;
+            head.prev = ptr;
         }
         Console.WriteLine("Nodo insertado al final\n");
     }
@@ -110,6 +111,8 @@ class Program {
         }
 
         ptr.next = temp.next;
+        ptr.prev = temp;
+        temp.next.prev = ptr;
         temp.next = ptr;
 
         Console.WriteLine("Nodo insertado despues de la posicion " + pos + "\n");
@@ -121,14 +124,13 @@ class Program {
             return;
         }
 
+        Node fin = head.prev;
+
         if(head.next == head) {
             head = null;
         } else {
-            Node temp2 = head;
-            while(temp2.next != head){
-                temp2 = temp2.next;
-            }
-            temp2.next = head.next;
+            fin.next = head.next;
+            head.next.prev = fin;
             head = head.next;
         }
         Console.WriteLine("Nodo eliminado del inicio\n");
@@ -140,16 +142,13 @@ class Program {
             return;
         }
 
+        Node fin = head.prev;
+
         if(head.next == head) {
             head = null;
         } else {
-            Node temp = head;
-            Node temp2 = null;
-            while(temp.next != head){
-                temp2 = temp;
-                temp = temp.next;
-            }
-            temp2.next = head;
+            fin.prev.next = head;
+            head.prev = fin.prev;
         }
         Console.WriteLine("Nodo eliminado del final\n");
     }
@@ -157,7 +156,6 @@ class Program {
     static void random_delete() {
         int pos, i = 0;
         Node temp;
-        Node temp2 = head;
 
         if(head == null) {
             Console.WriteLine("Lista vacia\n");
@@ -168,29 +166,23 @@ class Program {
         pos = int.Parse(Console.ReadLine());
 
         temp = head;
-        if(pos == 0){
-            if(head.next == head) {
-                head = null;
-            } else {
-                temp2 = head;
-                while(temp2.next != head){
-                    temp2 = temp2.next;
-                }
-                temp2.next = head.next;
-                head = head.next;
+        for(i = 0; i < pos; i++) {
+            temp = temp.next;
+            if(temp == head) {
+                Console.WriteLine("Posicion fuera de rango\n");
+                return;
             }
-        }else{
-            for(i = 0; i < pos; i++) {
-                temp2 = temp;
-                temp = temp.next;
-                if(temp == head) {
-                    Console.WriteLine("Posicion fuera de rango\n");
-                    return;
-                }
-            }
-        
-            temp2.next = temp.next;
         }
+
+        if(temp.next == temp && temp.prev == temp) {
+            head = null;
+            return;
+        }
+        if(temp == head) head = head.next;
+
+        temp.prev.next = temp.next;
+        temp.next.prev = temp.prev;
+
         Console.WriteLine("Nodo eliminado en la posicion " + pos + "\n");
     }
 
@@ -229,7 +221,7 @@ class Program {
         Node temp = head;
         Console.Write("Lista: ");
         do {
-            Console.Write(temp.data + " -> ");
+            Console.Write(temp.data + " <-> ");
             temp = temp.next;
         } while(temp != head);
         Console.WriteLine("(circular)\n");

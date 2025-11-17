@@ -4,7 +4,6 @@ class Node:
     def __init__(self):
         self.data = None
         self.next = None
-        self.prev = None
 
 head = None
 
@@ -18,14 +17,13 @@ def begin_insert():
     
     if head is None:
         ptr.next = ptr
-        ptr.prev = ptr
         head = ptr
     else:
-        fin = head.prev
+        temp = head
+        while temp.next != head:
+            temp = temp.next
         ptr.next = head
-        ptr.prev = fin
-        fin.next = ptr
-        head.prev = ptr
+        temp.next = ptr
         head = ptr
     print("Nodo insertado al inicio\n")
 
@@ -39,14 +37,13 @@ def last_insert():
 
     if head is None:
         ptr.next = ptr
-        ptr.prev = ptr
         head = ptr
     else:
-        fin = head.prev
+        temp = head
+        while temp.next != head:
+            temp = temp.next
         ptr.next = head
-        ptr.prev = fin
-        fin.next = ptr
-        head.prev = ptr
+        temp.next = ptr
     print("Nodo insertado al final\n")
 
 def random_insert():
@@ -71,8 +68,6 @@ def random_insert():
             return
 
     ptr.next = temp.next
-    ptr.prev = temp
-    temp.next.prev = ptr
     temp.next = ptr
 
     print("Nodo insertado despues de la posicion " + str(pos) + "\n")
@@ -83,13 +78,13 @@ def begin_delete():
         print("Lista vacia\n")
         return
 
-    fin = head.prev
-
     if head.next == head:
         head = None
     else:
-        fin.next = head.next
-        head.next.prev = fin
+        temp2 = head
+        while temp2.next != head:
+            temp2 = temp2.next
+        temp2.next = head.next
         head = head.next
     print("Nodo eliminado del inicio\n")
 
@@ -99,13 +94,15 @@ def last_delete():
         print("Lista vacia\n")
         return
 
-    fin = head.prev
-
     if head.next == head:
         head = None
     else:
-        fin.prev.next = head
-        head.prev = fin.prev
+        temp = head
+        temp2 = None
+        while temp.next != head:
+            temp2 = temp
+            temp = temp.next
+        temp2.next = head
     print("Nodo eliminado del final\n")
 
 def random_delete():
@@ -118,22 +115,25 @@ def random_delete():
     pos = int(input())
 
     temp = head
-    for i in range(pos):
-        temp = temp.next
-        if temp == head:
-            print("Posicion fuera de rango\n")
-            return
-
-    if temp.next == temp and temp.prev == temp:
-        head = None
-        return
+    if pos == 0:
+        if head.next == head:
+            head = None
+        else:
+            temp2 = head
+            while temp2.next != head:
+                temp2 = temp2.next
+            temp2.next = head.next
+            head = head.next
+    else:
+        for i in range(pos):
+            temp2 = temp
+            temp = temp.next
+            if temp == head:
+                print("Posicion fuera de rango\n")
+                return
+        
+        temp2.next = temp.next
     
-    if temp == head:
-        head = head.next
-
-    temp.prev.next = temp.next
-    temp.next.prev = temp.prev
-
     print("Nodo eliminado en la posicion " + str(pos) + "\n")
 
 def search():
@@ -171,7 +171,7 @@ def display():
     temp = head
     print("Lista: ", end="")
     while True:
-        print(str(temp.data) + " <-> ", end="")
+        print(str(temp.data) + " -> ", end="")
         temp = temp.next
         if temp == head:
             break
